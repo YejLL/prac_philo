@@ -1,8 +1,19 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <pthread.h>
-#include <philo.h>
+#include <sys/time.h>
+
+typedef struct	s_args
+{
+	int num_philo;
+	int time_to_die;
+	int time_to_eat;
+	int time_to_sleep;
+	int num_must_eat;
+}		t_args;
+
 
 
 size_t	get_time(size_t time_start)
@@ -41,7 +52,7 @@ void	*abc(void *arg)
 	return ((void *)arg);
 }
 
-int main(void)
+/*int main(void)
 {
 	pthread_t ph1, ph2, ph3, ph4;
 	pthread_mutex_t mutex_c;
@@ -56,17 +67,21 @@ int main(void)
 	pthread_join(ph4, NULL);
 	pthread_mutex_destroy(&mutex_c);
 	exit(0);
-}
+}*/
 
 int	main(int ac, char *av[])
 {
-	if (av[5] || av[6] != 0)
+	t_args *arg;
+
+	if (ac != 5 || ac != 6)
 		signal_error();
-	num_philo = av[1];
-	time_to_die = av[2];
-	time_to_eat = av[3];
-	time_to_sleep = av[4];
-	num_must_eat = av[5];
+	memeset(&arg, '\0', sizeof(t_args));
+	arg->num_philo = ft_atoi(av[1]);
+	arg->time_to_die = ft_atoi(av[2]);
+	arg->time_to_eat = ft_atoi(av[3]);
+	arg->time_to_sleep = ft_atoi(av[4]);
+	arg->num_must_eat = ft_atoi(av[5]);
+
 
 
 }
