@@ -24,9 +24,13 @@ void	*act(void *thread)
 {
 	int cnt = 0;
 	t_philo *philo;
+	//pthread_mutex_t pause;
 
 	philo = thread;
-	printf("%ld is eating\n", philo->tid);
+	//pthread_mutex_lock(&pause);
+	printf("philo %d is eating and tid: [%ld]\n", philo->num, philo->tid);
+	printf("Done\n");
+	//pthread_mutex_unlock(&pause);
 }
 
 int	main(int ac, char *av[])
@@ -52,6 +56,11 @@ int	main(int ac, char *av[])
 	/*philo = (t_philo *)malloc(sizeof(t_philo) * arg->num_philo);
 	if (!philo)
 		signal_error();*/
+	i = -1;
+	while (++i < arg->num_philo)
+	{
+		arg->philo[i].num = i;
+	}
 	i = -1;
 	while (++i < arg->num_philo)
 	{
