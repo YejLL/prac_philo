@@ -28,7 +28,7 @@ void	*act(void *thread)
 
 	philo = thread;
 	//pthread_mutex_lock(&pause);
-	printf("%d is eating count", philo->num);
+	printf("%d is eating and tid: [%ld\n]", philo->num, philo->tid);
 	printf("Done\n");
 	//pthread_mutex_unlock(&pause);
 }
