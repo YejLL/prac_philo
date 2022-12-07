@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/07 18:18:29 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/07 18:40:14 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static void print_message(t_philo *philo, char *str) //상태 메시지 출력
 	t_args *arg;
 
 	pthread_mutex_lock(&arg->messanger);
-	printf("%lld %s\n", philo.tid, str);
+	printf("%lld\t%d\t%s\n", time, philo->num, str);
+	pthread_mutex_unlock(&arg->messanger);
 }
 
 static void data_set(t_args *arg, int ac, char *av[])
@@ -93,9 +94,8 @@ static void *check_ticket(void *monitor, int n) //철학자들이 젓가락을 �
 	if (arg->philo[n].num % 2 == 0) //짝수일 경우
 	{
 		pthread_mutex_lock(&philo->left_f);
-		print_message(//00가 왼쪽 포크 잡음);
 		pthread_mutex_lock(&philo->right_f);
-		print_message(//00가 오른쪽 포크 잡음);
+		print_message(//00가 포크 잡음);
 	}
 	else
 	{
