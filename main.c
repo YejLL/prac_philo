@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/07 18:40:14 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/13 16:53:48 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void check_argu(int ac, t_args *arg)
 		ft_putendl_fd("Error in num_must_eat", 1);
 }
 
-static void init_all()
+static void init_all(int ac, char *av[], t_args *arg)
 {
 	data_set(&arg, ac, &av);
 	check_argu(ac, &arg);
@@ -72,8 +72,10 @@ static void	*act(void *thread) //스타트 루틴으로 변경 예정
 	pthread_mutex_unlock(&pause);
 }
 
-static void	eat()
+static void	eat(t_philo *philo)
 {
+	t_args *arg;
+	
 	take_fork();
 	print_message(eat);
 	pthread_mutex_unlock(&philo->left_f);
@@ -95,12 +97,11 @@ static void *check_ticket(void *monitor, int n) //철학자들이 젓가락을 �
 	{
 		pthread_mutex_lock(&philo->left_f);
 		pthread_mutex_lock(&philo->right_f);
-		print_message(//00가 포크 잡음);
+		print_message();//00가 포크 잡음
 	}
 	else
 	{
 		pthread_mutex_lock(&philo->right_f);
-		print_message();
 		pthread_mutex_lock(&philo->left_f);
 		print_message();
 		//홀수의 경우 오른쪽 포크 먼저 쥐긴
@@ -109,14 +110,45 @@ static void *check_ticket(void *monitor, int n) //철학자들이 젓가락을 �
 
 static void *make_fork(pthread_mutex_t *fork) //포크 만들기
 {
+	int	i;
 	t_args *args;
-	int i;
 	
 	i = -1;
 	if (++i < args->num_philo)
 	{
 		pthread_mutex_init(&fork[i], NULL);
 	}
+}
+
+static void stockAndcreate(t_args *arg)
+{
+	int	i;
+	t_philo *philo;
+
+	i = -1;
+	arg = malloc(sizeof(t_args));
+	arg->philo = malloc(sizeof(t_philo) * arg->num_philo);
+	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);
+	while (++i < arg->num_philo)
+	{
+		arg->philo[i].num = i;
+		if (phread_create(&arg->philo[i].tid, NULL, act, &arg->philo[i]) < 0)
+			return (FALSE);
+	}
+	if (pthread_create(&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0);
+		return (FALSE);
+	pthread_detach(&arg->monitor);
+}
+
+static void freeAndjoin(t_args *arg)
+{
+	int i;
+
+	i = -1;
+	while (++i < arg->num_philo)
+		pthread_join(arg->philo[i].tid, NULL);
+	free(arg->philo);
+	free(arg);
 }
 		
 int	main(int ac, char *av[])
@@ -128,13 +160,15 @@ int	main(int ac, char *av[])
 
 	/*if (ac != 5 || ac != 6)
 		signal_error();*/
-	arg = malloc(sizeof(t_args));
+	/*arg = malloc(sizeof(t_args));
 	//arg->num_philo = ft_atoi(av[1]);
 	arg->philo = malloc(sizeof(t_philo) * arg->num_philo);
-	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);
-	init_all();
+	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);*/
+	init_all(ac, &av, arg);
+	stockAndcreate(arg);
 	make_fork(&fork);
-	i = -1;
+	freeAndjoin(&arg);
+	/*i = -1;
 	while (++i < arg->num_philo)
 	{
 		arg->philo[i].num = i;
@@ -145,14 +179,14 @@ int	main(int ac, char *av[])
 		if (pthread_create(&arg->philo[i].tid, NULL, act, &arg->philo[i]) < 0)
 			return (signal_error());
 		/*if (pthread_create(&arg->fork[i], NULL, 함수, &arg->fork[i]) < 0) //포크 생성
-			return (signal_error());*/
+			return (signal_error());
 	}
 	pthread_create((&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0);
-	pthread_detach(&arg->monitor); //모니터 생성한 후 혼자 돌아 다니게 두기
-	i = -1;
+	pthread_detach(&arg->monitor); //모니터 생성한 후 혼자 돌아 다니게 두기*/
+	/*i = -1;
 	while (++i < arg->num_philo)
 		pthread_join(arg->philo[i].tid, NULL);
 	free(arg->philo);
-	free(arg);
+	free(arg);*/
 	return (0);
 }
