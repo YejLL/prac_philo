@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/13 18:22:07 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/13 18:47:41 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,13 @@ static void init_all(int ac, char *av[], t_args *arg)
 
 static void	*start(void *thread) //스타트 루틴으로 변경 예정
 {
+	int i;
 	t_philo	*philo;
+	t_args 	*arg;
 
+	i = -1;
 	philo = (t_philo *)thread;
-	while (i != DIE)
+	while (++i != arg->die)
 	{
 		take_fork();
 		eat();
@@ -137,7 +140,7 @@ static void stockAndcreate(t_args *arg)
 		if (phread_create(&arg->philo[i].tid, NULL, start, &arg->philo[i]) < 0)
 			return (FALSE);
 	}
-	if (pthread_create(&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0);
+	if (pthread_create(&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0); //모니터 생성..
 		return (FALSE);
 	pthread_detach(&arg->monitor);
 }
@@ -192,3 +195,8 @@ int	main(int ac, char *av[])
 	free(arg);*/
 	return (0);
 }
+
+/*개선 사항
+1. 먹기 잠자기 생각하기 만들기.
+2. 시간 체킹 함수 만들기.
+3. 모니터링 더 자세히 알아보기.
