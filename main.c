@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/13 16:53:48 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/13 18:22:07 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void print_message(t_philo *philo, char *str) //상태 메시지 출력
 	t_args *arg;
 
 	pthread_mutex_lock(&arg->messanger);
-	printf("%lld\t%d\t%s\n", time, philo->num, str);
+	printf("%lld\t%d\t%s\n", ms_time, philo->num, str);
 	pthread_mutex_unlock(&arg->messanger);
 }
 
@@ -60,16 +60,17 @@ static void init_all(int ac, char *av[], t_args *arg)
 		printf("%d is thinking\n", philo->num);
 }*/ //고민중
 
-static void	*act(void *thread) //스타트 루틴으로 변경 예정
+static void	*start(void *thread) //스타트 루틴으로 변경 예정
 {
 	t_philo	*philo;
-	pthread_mutex_t pause;
 
 	philo = (t_philo *)thread;
-	pthread_mutex_lock(&pause);
-	printf("[philo %d] and tid: [%ld]\n", philo->num, philo->tid);
-	printf("Done\n");
-	pthread_mutex_unlock(&pause);
+	while (i != DIE)
+	{
+		take_fork();
+		eat();
+		printf("[philo %d] and tid: [%ld]\n", philo->num, philo->tid);
+	}
 }
 
 static void	eat(t_philo *philo)
@@ -82,10 +83,11 @@ static void	eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->right_f);
 }
 
-static void *take_fork()
+/*static void	take_fork(t_philo *philo)
 {
+	pthread_mutex_lock
 
-}
+}*/
 
 static void *check_ticket(void *monitor, int n) //철학자들이 젓가락을 쥐려면 허락을 받아야 함.
 {
@@ -132,7 +134,7 @@ static void stockAndcreate(t_args *arg)
 	while (++i < arg->num_philo)
 	{
 		arg->philo[i].num = i;
-		if (phread_create(&arg->philo[i].tid, NULL, act, &arg->philo[i]) < 0)
+		if (phread_create(&arg->philo[i].tid, NULL, start, &arg->philo[i]) < 0)
 			return (FALSE);
 	}
 	if (pthread_create(&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0);
