@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/13 18:47:41 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/15 18:14:19 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void print_message(t_philo *philo, char *str) //상태 메시지 출력
 	t_args *arg;
 
 	pthread_mutex_lock(&arg->messanger);
-	printf("%lld\t%d\t%s\n", ms_time, philo->num, str);
+	printf("%lldms\t%d\t%s\n", ms_time, philo->num, str);
 	pthread_mutex_unlock(&arg->messanger);
 }
 
@@ -62,6 +62,13 @@ static void init_all(int ac, char *av[], t_args *arg)
 	//철학자와 포크 생성, 말록 부분 가져오기 
 }
 
+static void init_value(t_args *arg) //value 값 초기화
+{
+	arg->die = 0;
+	arg->fork = 0;
+	arg->start_time = 0;
+	arg->done = 0;
+}
 /*static void print_sleep_think(t_philo *philo, int status) //랜덤으로 자거나 먹는 방법 사용
 {
 	if (status == SLEEP)
@@ -69,6 +76,10 @@ static void init_all(int ac, char *av[], t_args *arg)
 	if (status == THINK)
 		printf("%d is thinking\n", philo->num);
 }*/ //고민중
+static void check_die()
+{
+
+}
 
 static void	*start_routine(void *thread) //스타트 루틴으로 변경 예정
 {
@@ -90,7 +101,7 @@ static void	*start_routine(void *thread) //스타트 루틴으로 변경 예정
 
 static void take_fork(t_philo *philo)
 {
-	if (philo->num % 2 == 0)
+	if (philo[i].num % 2 == 0)
 		pthread_mutex_lock(&philo->arg->fork[philo->left_f]);
 	else
 		pthread_mutex_lock(&philo->arg->fork[philo->right_f]);
@@ -101,16 +112,16 @@ static void	eat(t_philo *philo)
 	t_args *arg;
 	
 	take_fork();
-	print_message(eat);
+	print_message(philo, "is eating");
 	pthread_mutex_unlock(&philo->left_f);
 	pthread_mutex_unlock(&philo->right_f);
 }
 
-/*static void	take_fork(t_philo *philo)
+static void sleepAndThink(t_philo *philo)
 {
-	pthread_mutex_lock
+	
 
-}*/
+}
 
 static void *check_ticket(void *monitor, int n) //철학자들이 젓가락을 쥐려면 허락을 받아야 함.
 {
@@ -143,6 +154,12 @@ static void *make_fork(pthread_mutex_t *fork) //포크 만들기
 	{
 		pthread_mutex_init(&fork[i], NULL);
 	}
+}
+
+static void init_mutex(t_args *arg)
+{
+	pthread_mutex_init(&arg->monitor, NULL);
+
 }
 
 static void stockAndcreate(t_args *arg)
@@ -183,8 +200,8 @@ int	main(int ac, char *av[])
 	t_philo	*philo;
 	pthread_mutex_t *fork;
 
-	/*if (ac != 5 || ac != 6)
-		signal_error();*/
+	if (ac != 5 || ac != 6)
+		return (-1);
 	/*arg = malloc(sizeof(t_args));
 	//arg->num_philo = ft_atoi(av[1]);
 	arg->philo = malloc(sizeof(t_philo) * arg->num_philo);

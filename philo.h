@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 11:18:07 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/13 18:38:34 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/15 18:14:22 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct s_args
 	int				num_must_eat;
 	int				start_time;
 	int				die;
+	int				done;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	messanger;
 	pthread_mutex_t	monitor;
