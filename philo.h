@@ -39,9 +39,10 @@ typedef struct s_args
 	int				time_to_sleep;
 	int				num_must_eat;
 	int				start_time;
+	int				die;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	messanger;
-	pthread_t		monitor;
+	pthread_mutex_t	monitor;
 	t_philo			*philo;
 }				t_args;
 

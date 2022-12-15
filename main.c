@@ -12,6 +12,16 @@
 
 #include "philo.h"
 
+long long	get_time(void)
+{
+	long long		ms_time;
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	ms_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+	return (ms_time);
+}
+
 static void print_message(t_philo *philo, char *str) //상태 메시지 출력
 {
 	t_args *arg;
@@ -60,20 +70,30 @@ static void init_all(int ac, char *av[], t_args *arg)
 		printf("%d is thinking\n", philo->num);
 }*/ //고민중
 
-static void	*start(void *thread) //스타트 루틴으로 변경 예정
+static void	*start_routine(void *thread) //스타트 루틴으로 변경 예정
 {
-	int i;
 	t_philo	*philo;
 	t_args 	*arg;
 
-	i = -1;
 	philo = (t_philo *)thread;
-	while (++i != arg->die)
+	if (philo->num % 2 != 0)
+		usleep(philo->arg->time_to_eat * 1000);
+	while (!philo->arg->die)
 	{
-		take_fork();
-		eat();
-		printf("[philo %d] and tid: [%ld]\n", philo->num, philo->tid);
+		take_fork(philo);
+		eat(philo);
+		if (philo->arg->done)
+			break ;
+		sleepAndThink(philo);
 	}
+}
+
+static void take_fork(t_philo *philo)
+{
+	if (philo->num % 2 == 0)
+		pthread_mutex_lock(&philo->arg->fork[philo->left_f]);
+	else
+		pthread_mutex_lock(&philo->arg->fork[philo->right_f]);
 }
 
 static void	eat(t_philo *philo)
@@ -137,12 +157,12 @@ static void stockAndcreate(t_args *arg)
 	while (++i < arg->num_philo)
 	{
 		arg->philo[i].num = i;
-		if (phread_create(&arg->philo[i].tid, NULL, start, &arg->philo[i]) < 0)
+		if (phread_create(&arg->philo[i].tid, NULL, start_routine, &arg->philo[i]) < 0)
 			return (FALSE);
 	}
-	if (pthread_create(&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0); //모니터 생성..
+	/*if (pthread_create(&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0); //모니터 생성..
 		return (FALSE);
-	pthread_detach(&arg->monitor);
+	pthread_detach(&arg->monitor);*/
 }
 
 static void freeAndjoin(t_args *arg)
