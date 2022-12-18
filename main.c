@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/18 17:24:19 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/18 17:43:27 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static void print_message(t_philo *philo, long long time_get, char *str) //상�
 	t_args *arg;
 
 	pthread_mutex_lock(&arg->messanger);
-	printf("%lldms\t%d\t%s\n", time_get, philo->num, str);
+	if (!philo->arg->die)
+		printf("%lldms\t%d\t%s\n", time_get, philo->num, str);
 	pthread_mutex_unlock(&arg->messanger);
 }
 
@@ -157,7 +158,6 @@ static void sleep_and_think(t_philo *philo)
 	think_time = get_time() - philo->arg->time_to_start;
 	print_message(philo, think_time, THINKING);
 	usleep(200);
-
 }
 
 static void init_mutex(t_args *arg)
@@ -205,6 +205,8 @@ static void free_and_join(t_args *arg)
 		pthread_join(arg->philo[i].tid, NULL);
 	free(arg->philo);
 	free(arg);
+	pthread_mutex_destroy(&arg->messanger);
+	pthread_mutex_destroy(&arg->monitor);
 }
 		
 int	main(int ac, char *av[])
@@ -212,22 +214,20 @@ int	main(int ac, char *av[])
 	int		i;
 	t_args	*arg;
 	t_philo	*philo;
-	pthread_mutex_t *fork;
 
 	if (ac != 5 || ac != 6)
 	{
 		ft_putendl_fd("Error in arguments ac for philosophers.", 1);
 		return (-1);
-
 	}
 	/*arg = malloc(sizeof(t_args));
 	//arg->num_philo = ft_atoi(av[1]);
 	arg->philo = malloc(sizeof(t_philo) * arg->num_philo);
 	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);*/
-	init_all(ac, &av, arg);
-	stockAndcreate(arg);
-	make_fork(&fork);
-	freeAndjoin(&arg);
+	init_all(ac, av, &arg);
+	stock_and_create(&arg);
+	init_mutex(&arg);
+	free_and_join(&arg);
 	/*i = -1;
 	while (++i < arg->num_philo)
 	{
@@ -241,8 +241,6 @@ int	main(int ac, char *av[])
 		/*if (pthread_create(&arg->fork[i], NULL, 함수, &arg->fork[i]) < 0) //포크 생성
 			return (signal_error());
 	}
-	pthread_create((&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0);
-	pthread_detach(&arg->monitor); //모니터 생성한 후 혼자 돌아 다니게 두기*/
 	/*i = -1;
 	while (++i < arg->num_philo)
 		pthread_join(arg->philo[i].tid, NULL);
