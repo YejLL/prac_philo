@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/18 16:45:58 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/18 17:24:19 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,9 @@ long long	get_time(void)
 	return (ms_time);
 }
 
-static void print_message(t_philo *philo, char *str) //상태 메시지 출력
+static void print_message(t_philo *philo, long long time_get, char *str) //상태 메시지 출력
 {
 	t_args *arg;
-	long time_get;
 
 	pthread_mutex_lock(&arg->messanger);
 	printf("%lldms\t%d\t%s\n", time_get, philo->num, str);
@@ -161,42 +160,23 @@ static void sleep_and_think(t_philo *philo)
 
 }
 
-/*static void *check_ticket(void *monitor, int n) //철학자들이 젓가락을 쥐려면 허락을 받아야 함.
-{
-	t_philo *philo;
-	t_args *arg;
-	
-	arg->monitor = (t_philo *)monitor;
-	if (arg->philo[n].num % 2 == 0) //짝수일 경우
-	{
-		pthread_mutex_lock(&philo->left_f);
-		pthread_mutex_lock(&philo->right_f);
-		print_message();//00가 포크 잡음
-	}
-	else
-	{
-		pthread_mutex_lock(&philo->right_f);
-		pthread_mutex_lock(&philo->left_f);
-		print_message();
-		//홀수의 경우 오른쪽 포크 먼저 쥐긴
-	}
-}*/
-
-static void *make_fork(pthread_mutex_t *fork) //포크 만들기
-{
-	int	i;
-	t_args *args;
-	
-	i = -1;
-	if (++i < args->num_philo)
-	{
-		pthread_mutex_init(&fork[i], NULL);
-	}
-}
-
 static void init_mutex(t_args *arg)
 {
+	int i;
+
+	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);
+	if (arg->fork == NULL)
+	{
+		ft_putendl_fd("Error malloc for fork", 1);
+		return (NULL);
+	}
+	i = -1;
+	if (++i < arg->num_philo)
+	{
+		pthread_mutex_init(&arg->fork[i], NULL);
+	}
 	pthread_mutex_init(&arg->monitor, NULL);
+	pthread_mutex_init(&arg->messanger, NULL);
 
 }
 
@@ -208,16 +188,12 @@ static void stock_and_create(t_args *arg)
 	i = -1;
 	arg = malloc(sizeof(t_args));
 	arg->philo = malloc(sizeof(t_philo) * arg->num_philo);
-	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);
 	while (++i < arg->num_philo)
 	{
 		arg->philo[i].num = i; //0부터 시작하는 방법
 		if (phread_create(&arg->philo[i].tid, NULL, start_routine, &arg->philo[i]) < 0)
 			ft_putendl_fd("Error in Pthread_create for philosophers, check this", 1);
 	}
-	/*if (pthread_create(&arg->monitor, NULL, check_ticket, &arg->philo[i]) < 0); //모니터 생성..
-		return (FALSE);
-	pthread_detach(&arg->monitor);*/
 }
 
 static void free_and_join(t_args *arg)
@@ -274,8 +250,3 @@ int	main(int ac, char *av[])
 	free(arg);*/
 	return (0);
 }
-
-/*개선 사항
-1. 먹기 잠자기 생각하기 만들기.
-2. 시간 체킹 함수 만들기.
-3. 모니터링 더 자세히 알아보기.
