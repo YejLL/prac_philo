@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/16 15:58:44 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/18 16:45:58 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ long long	get_time(void)
 static void print_message(t_philo *philo, char *str) //상태 메시지 출력
 {
 	t_args *arg;
+	long time_get;
 
 	pthread_mutex_lock(&arg->messanger);
 	printf("%lldms\t%d\t%s\n", time_get, philo->num, str);
@@ -69,17 +70,33 @@ static void init_value(t_args *arg) //value 값 초기화
 	arg->start_time = 0;
 	arg->done = 0;
 }
-/*static void print_sleep_think(t_philo *philo, int status) //랜덤으로 자거나 먹는 방법 사용
-{
-	if (status == SLEEP)
-		printf("%d is sleeping\n", philo->num);
-	if (status == THINK)
-		printf("%d is thinking\n", philo->num);
-}*/ //고민중
-static void check_die(t_args *arg)
-{
-	if ()
 
+static void check_finish(t_args *arg)
+{
+	int	i;
+	
+	while (!arg->done)
+	{
+		i = -1;
+		while (++i < arg->num_philo && !arg->die)
+		{
+			pthread_mutex_lock(&arg->monitor);
+			if (get_time() - arg->philo[i].last_eat > arg->time_to_die)
+			{
+				print_message(&arg->philo[i], get_time() - arg->time_to_start, DIE);
+				arg->die = 1;
+			}
+			pthread_mutex_unlock(&arg->monitor);
+		}
+		if (arg->die)
+			break ;
+		i = 0;
+		while(arg->num_must_eat != -1 && i < arg->num_philo 
+			&& arg->philo[i].eat_cnt >= arg->num_must_eat)
+			i++;
+		if (arg->num_philo == i)
+			arg->done = 1;
+	}
 }
 
 static void	*start_routine(void *thread) //스타트 루틴으로 변경 예정
@@ -90,7 +107,7 @@ static void	*start_routine(void *thread) //스타트 루틴으로 변경 예정
 	philo = (t_philo *)thread;
 	if (philo->num % 2 != 0)
 		usleep(philo->arg->time_to_eat * 1000);
-	while (!philo->arg->die)
+	while (!philo->arg->die) //enum의 DIED 로 변경
 	{
 		take_fork(philo);
 		eat(philo);
@@ -106,23 +123,41 @@ static void take_fork(t_philo *philo)
 		pthread_mutex_lock(&philo->arg->fork[philo->left_f]);
 	else
 		pthread_mutex_lock(&philo->arg->fork[philo->right_f]);
-		//실패시 False 반환
+	print_message(philo, get_time() - philo->arg->time_to_start, TAKE_FORK);
+	if (philo[i].num % 2 == 0)
+		pthread_mutex_lock(&philo->arg->fork[philo->right_f]);
+	else
+		pthread_mutex_lock(&philo->arg->fork[philo->left_f]);
+	print_message(philo, get_time() - philo->arg->time_to_start, TAKE_FORK);
 }
 
 static void	eat(t_philo *philo)
 {
-	t_args *arg;
-	
-	take_fork(philo);
-	print_message(philo, EATING\n);
-	//philo->arg->done++;
-	pthread_mutex_unlock(&philo->left_f);
-	pthread_mutex_unlock(&philo->right_f);
+	pthread_mutex_lock(&philo->arg->monitor);
+	philo->last_eat = get_time();
+	print_message(philo, philo->last_eat - philo->arg->time_to_start, EATING);
+	pthread_mutex_unlock(&philo->arg->monitor);
+	while (get_time() < philo->last_eat + philo->info->time_to_eat)
+		;
+	philo->eat_cnt++;
+	pthread_mutex_unlock(&philo->arg->fork[philo->left_f]);
+	pthread_mutex_unlock(&philo->arg->fork[philo->right_f]);
 }
 
 static void sleep_and_think(t_philo *philo)
 {
-	
+	t_args *arg;
+	long	think_time;
+	long	sleep_time;
+
+	philo->last_sleep = get_time();
+	sleep_time = philo->last_sleep - philo->arg->time_to_start;
+	print_message(philo, sleep_time, SLEEPING);
+	while (get_time() < philo->last_sleep + philo->arg->time_to_sleep)
+		continue;
+	think_time = get_time() - philo->arg->time_to_start;
+	print_message(philo, think_time, THINKING);
+	usleep(200);
 
 }
 

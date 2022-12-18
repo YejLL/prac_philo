@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 11:18:07 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/15 18:14:22 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/18 16:46:00 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,12 @@ typedef struct s_philo
 {
 	int				num;
 	int				status;
+	int				eat_cnt;
+	long			last_eat;
+	long			last_sleep;
+	int				left_f;
+	int				right_f;
 	pthread_t		tid;
-	pthread_mutex_t	*left_f;
-	pthread_mutex_t	*right_f;
 	struct t_args	*arg;
 }				t_philo;
 
@@ -38,7 +41,7 @@ typedef struct s_args
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				num_must_eat;
-	int				start_time;
+	int				time_to_start;
 	int				die;
 	int				done;
 	pthread_mutex_t	*fork;

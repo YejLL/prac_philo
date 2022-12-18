@@ -6,12 +6,15 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:25:02 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/16 17:07:36 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/18 13:00:34 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ARG_H
 # define ARG_H
+
+# define MAX_INT 2147483647
+
 # define EATING "is eating"
 # define SLEEPING "is sleeping"
 # define THINKING "is thinking"
