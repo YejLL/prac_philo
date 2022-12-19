@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 11:18:07 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/18 16:46:00 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/19 18:15:53 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ typedef struct s_args
 }				t_args;
 
 int		ft_atoi(const char *str);
+int		print_err(char *err);
+int		check_num(int ac, char *av[]);
 void	ft_putendl_fd(char *s, int fd);
 void	init_all(int ac, char *av[], t_args *arg);
 

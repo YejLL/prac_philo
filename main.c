@@ -6,70 +6,11 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/18 17:43:27 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/19 18:15:50 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-long long	get_time(void)
-{
-	long long		ms_time;
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	ms_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-	return (ms_time);
-}
-
-static void print_message(t_philo *philo, long long time_get, char *str) //상태 메시지 출력
-{
-	t_args *arg;
-
-	pthread_mutex_lock(&arg->messanger);
-	if (!philo->arg->die)
-		printf("%lldms\t%d\t%s\n", time_get, philo->num, str);
-	pthread_mutex_unlock(&arg->messanger);
-}
-
-static void data_set(t_args *arg, int ac, char *av[])
-{
-	arg->num_philo = ft_atoi(av[1]);
-	arg->time_to_die = ft_atoi(av[2]);
-	arg->time_to_eat = ft_atoi(av[3]);
-	arg->time_to_sleep = ft_atoi(av[4]);
-	if (ac == 6 && arg->num_must_eat != 0)
-		arg->num_must_eat = ft_atoi(av[5]);
-}
-
-static void check_argu(int ac, t_args *arg)
-{
-	if (arg->num_philo <= 0)
-		ft_putendl_fd("Error in num_philo", 1);
-	if (arg->time_to_die <= 0)
-		ft_putendl_fd("Error in time_to_die", 1);
-	if (arg->time_to_eat <= 0)
-		ft_putendl_fd("Error in time_to_eat", 1);
-	if (arg->time_to_sleep <= 0)
-		ft_putendl_fd("Error in time_to_sleep", 1);
-	if (ac == 6 && arg->num_must_eat <= 0)
-		ft_putendl_fd("Error in num_must_eat", 1);
-}
-
-static void init_all(int ac, char *av[], t_args *arg)
-{
-	data_set(&arg, ac, &av);
-	check_argu(ac, &arg);
-	//철학자와 포크 생성, 말록 부분 가져오기 
-}
-
-static void init_value(t_args *arg) //value 값 초기화
-{
-	arg->die = 0;
-	arg->fork = 0;
-	arg->start_time = 0;
-	arg->done = 0;
-}
 
 static void check_finish(t_args *arg)
 {
@@ -154,7 +95,7 @@ static void sleep_and_think(t_philo *philo)
 	sleep_time = philo->last_sleep - philo->arg->time_to_start;
 	print_message(philo, sleep_time, SLEEPING);
 	while (get_time() < philo->last_sleep + philo->arg->time_to_sleep)
-		continue;
+		continue; //여기서 continue는 의미 없음.
 	think_time = get_time() - philo->arg->time_to_start;
 	print_message(philo, think_time, THINKING);
 	usleep(200);
@@ -177,7 +118,6 @@ static void init_mutex(t_args *arg)
 	}
 	pthread_mutex_init(&arg->monitor, NULL);
 	pthread_mutex_init(&arg->messanger, NULL);
-
 }
 
 static void stock_and_create(t_args *arg)
@@ -192,7 +132,7 @@ static void stock_and_create(t_args *arg)
 	{
 		arg->philo[i].num = i; //0부터 시작하는 방법
 		if (phread_create(&arg->philo[i].tid, NULL, start_routine, &arg->philo[i]) < 0)
-			ft_putendl_fd("Error in Pthread_create for philosophers, check this", 1);
+			print_err("Error in Pthread_create for philosophers, check this");
 	}
 }
 
@@ -215,36 +155,12 @@ int	main(int ac, char *av[])
 	t_args	*arg;
 	t_philo	*philo;
 
+	memset(&arg, 0, sizeof(arg));
 	if (ac != 5 || ac != 6)
-	{
-		ft_putendl_fd("Error in arguments ac for philosophers.", 1);
-		return (-1);
-	}
-	/*arg = malloc(sizeof(t_args));
-	//arg->num_philo = ft_atoi(av[1]);
-	arg->philo = malloc(sizeof(t_philo) * arg->num_philo);
-	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);*/
-	init_all(ac, av, &arg);
-	stock_and_create(&arg);
-	init_mutex(&arg);
-	free_and_join(&arg);
-	/*i = -1;
-	while (++i < arg->num_philo)
-	{
-		arg->philo[i].num = i;
-	}
-	i = -1;
-	while (++i < arg->num_philo)
-	{
-		if (pthread_create(&arg->philo[i].tid, NULL, act, &arg->philo[i]) < 0)
-			return (signal_error());
-		/*if (pthread_create(&arg->fork[i], NULL, 함수, &arg->fork[i]) < 0) //포크 생성
-			return (signal_error());
-	}
-	/*i = -1;
-	while (++i < arg->num_philo)
-		pthread_join(arg->philo[i].tid, NULL);
-	free(arg->philo);
-	free(arg);*/
+		return (print_err("Error in arguments ac for philosophers."));
+	if (init_all_philo(ac, av, &arg))
+		return (1);
+	if (start_philo)
+		return (1);
 	return (0);
 }
