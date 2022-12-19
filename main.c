@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:47:31 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/19 18:15:50 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/19 19:36:34 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ static void stock_and_create(t_args *arg)
 	}
 }
 
-static void free_and_join(t_args *arg)
+/*static void free_and_join(t_args *arg)
 {
 	int i;
 
@@ -147,7 +147,7 @@ static void free_and_join(t_args *arg)
 	free(arg);
 	pthread_mutex_destroy(&arg->messanger);
 	pthread_mutex_destroy(&arg->monitor);
-}
+}*/
 		
 int	main(int ac, char *av[])
 {

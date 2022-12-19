@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 17:32:01 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/19 18:54:33 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/19 19:34:46 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int data_set(t_args *arg, int ac, char *av[])
 	arg->done = 0;
 }*/
 
-int stock_and_create(t_args *arg)
+/*int stock_and_create(t_args *arg)
 {
 	int	i;
 	t_philo *philo;
@@ -62,13 +62,13 @@ int stock_and_create(t_args *arg)
 		arg->philo[i].num = i + 1;
 		if (phread_create(&arg->philo[i].tid, NULL, start_routine, &arg->philo[i]) < 0)
 			print_err("Error in Pthread_create for philosophers, check this");
-		arg->philo[i].eat_cnt = 0;
+		//arg->philo[i].eat_cnt = 0;
 		arg->philo[i].last_eat = 0; //스타트 타임이랑 연결할 지 생각
 		arg->philo[i].last_sleep = 0;
 		arg->philo[i].left_f = i;
 		arg->philo[i].right_f = i + 1; //생각해보자
 	}
-}
+}*/
 
 int init_mutex(t_args *arg)
 {
