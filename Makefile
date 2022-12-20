@@ -6,7 +6,7 @@
 #    By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/09 15:13:11 by yejlee            #+#    #+#              #
-#    Updated: 2022/12/19 14:44:09 by yejlee           ###   ########.fr        #
+#    Updated: 2022/12/20 17:10:28 by yejlee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,8 +26,12 @@ White	= \033[0;37m
 NAME	= philo
 
 SRCS	= 	main.c \
-	  		tool.c\
-	  			.c\
+	  		check.c\
+	  		init.c\
+			print_message.c\
+			routine.c\
+			time_set.c\
+			tool.c
 
 OBJS	= $(SRCS:.c=.o)
 
@@ -38,7 +42,7 @@ $(NAME)	: $(OBJS)
 		@echo "$(Cyan)philo has been created and available$(Set_Color)"
 		
 clean	:
-		@rm -f $(NAME)
+		@rm -f $(OBJS)
 		@echo "$(Red)obj files have been successfully removed$(Set_Color)"
 
 fclean	: clean

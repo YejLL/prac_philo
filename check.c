@@ -6,16 +6,16 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 13:51:19 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/19 19:40:05 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/20 19:19:23 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void check_finish(t_args *arg)
+static void	check_finish(t_args *arg)
 {
 	int	i;
-	
+
 	while (!arg->done)
 	{
 		i = -1;
@@ -24,7 +24,8 @@ void check_finish(t_args *arg)
 			pthread_mutex_lock(&arg->monitor);
 			if (get_time() - arg->philo[i].last_eat > arg->time_to_die)
 			{
-				print_message(&arg->philo[i], get_time() - arg->time_to_start, DIE);
+				print_message(&arg->philo[i], get_time() \
+						- arg->start_at, DIE);
 				arg->die = 1;
 			}
 			pthread_mutex_unlock(&arg->monitor);
@@ -32,17 +33,17 @@ void check_finish(t_args *arg)
 		if (arg->die)
 			break ;
 		i = 0;
-		while (arg->num_must_eat != -1 && i < arg->num_philo 
-			&& arg->philo[i].eat_cnt >= arg->num_must_eat)
+		while (arg->num_must_eat != -1 && i < arg->num_philo \
+				&& arg->philo[i].eat_cnt >= arg->num_must_eat)
 			i++;
 		if (arg->num_philo == i)
 			arg->done = 1;
 	}
 }
 
-void free_and_join(t_args *arg)
+static void	free_and_join(t_args *arg)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	if (arg->num_philo == 1)
@@ -60,19 +61,20 @@ void free_and_join(t_args *arg)
 
 int	start_program(t_args *arg)
 {
-	int i;
+	int	i;
 
-	arg->time_to_start = get_time();
+	arg->start_at = get_time();
 	i = -1;
 	while (++i < arg->num_philo)
 	{
-		arg->philo[i].last_eat = arg->time_to_start;
-		arg->philo[i].last_sleep = arg->time_to_start;
+		arg->philo[i].last_eat = arg->start_at;
+		arg->philo[i].last_sleep = arg->start_at;
 		arg->philo[i].eat_cnt = 0;
-		if (pthread_create(&arg->philo[i].tid, NULL, start_routine, &arg->philo[i]))
+		arg->philo[i].num = i + 1;
+		if (pthread_create(&arg->philo[i].tid, NULL, start_ph, &arg->philo[i]))
 			return (print_err("ERROR IN CREATE\n"));
 	}
 	check_finish(arg);
-	free_philo(arg);
+	free_and_join(arg);
 	return (0);
 }

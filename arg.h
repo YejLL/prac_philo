@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 17:25:02 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/18 13:00:34 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/20 15:06:39 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef enum e_status
 typedef enum e_bool
 {
 	TRUE = 0,
-	FALSE = -1	
+	FALSE = 1
 }			t_bool;
 
 #endif

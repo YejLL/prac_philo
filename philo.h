@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 11:18:07 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/19 18:15:53 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/20 19:30:54 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,13 @@
 typedef struct s_philo
 {
 	int				num;
-	int				status;
 	int				eat_cnt;
 	long			last_eat;
 	long			last_sleep;
 	int				left_f;
 	int				right_f;
 	pthread_t		tid;
-	struct t_args	*arg;
+	struct s_args	*arg;
 }				t_philo;
 
 typedef struct s_args
@@ -41,7 +40,7 @@ typedef struct s_args
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				num_must_eat;
-	int				time_to_start;
+	int				start_at;
 	int				die;
 	int				done;
 	pthread_mutex_t	*fork;
@@ -50,10 +49,15 @@ typedef struct s_args
 	t_philo			*philo;
 }				t_args;
 
-int		ft_atoi(const char *str);
-int		print_err(char *err);
-int		check_num(int ac, char *av[]);
-void	ft_putendl_fd(char *s, int fd);
-void	init_all(int ac, char *av[], t_args *arg);
+int			ft_atoi(const char *str);
+int			print_err(char *err);
+int			check_num(int ac, char *av[]);
+int			start_program(t_args *arg);
+int			init_all_philo(int ac, char *av[], t_args *arg);
+int			check_num(int ac, char *av[]);
+long long	get_time(void);
+void		*start_ph(void *thread);
+void		ft_putendl_fd(char *s, int fd);
+void		print_message(t_philo *philo, long long time_get, char *str);
 
 #endif
