@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 13:51:19 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/20 19:19:23 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/21 18:19:57 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	check_finish(t_args *arg)
 		while (++i < arg->num_philo && !arg->die)
 		{
 			pthread_mutex_lock(&arg->monitor);
-			if (get_time() - arg->philo[i].last_eat > arg->time_to_die)
+			if (get_time() - arg->philo[i].last_eat > arg->time_to_die) //> 였음
 			{
 				print_message(&arg->philo[i], get_time() \
 						- arg->start_at, DIE);
@@ -70,7 +70,6 @@ int	start_program(t_args *arg)
 		arg->philo[i].last_eat = arg->start_at;
 		arg->philo[i].last_sleep = arg->start_at;
 		arg->philo[i].eat_cnt = 0;
-		arg->philo[i].num = i + 1;
 		if (pthread_create(&arg->philo[i].tid, NULL, start_ph, &arg->philo[i]))
 			return (print_err("ERROR IN CREATE\n"));
 	}

@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 17:32:01 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/20 19:17:38 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/21 18:16:33 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	data_set(t_args *arg, int ac, char *av[])
 	arg->time_to_eat = ft_atoi(av[3]);
 	arg->time_to_sleep = ft_atoi(av[4]);
 	arg->num_must_eat = -1;
-	if (ac == 6 && arg->num_must_eat != 0 && arg->num_must_eat != -1)
+	if (ac == 6)
 		arg->num_must_eat = ft_atoi(av[5]);
 	return (0);
 }
@@ -30,10 +30,7 @@ static int	init_mutex(t_args *arg)
 
 	arg->fork = malloc(sizeof(pthread_mutex_t) * arg->num_philo);
 	if (arg->fork == NULL)
-	{
-		ft_putendl_fd("Error malloc for fork", 1);
-		return (1);
-	}
+		print_err("ERROR IN MALLOC ARG->FORK");
 	i = -1;
 	if (++i < arg->num_philo)
 	{
@@ -51,10 +48,15 @@ static int	init_philo(t_args *arg)
 	i = -1;
 	arg->philo = malloc(sizeof(t_philo) * arg->num_philo);
 	if (arg->philo == NULL)
-		print_err("error for malloc in arg->philo\n");
+		print_err("ERROR IN MALLOC ARG->PHILO");
 	while (++i < arg->num_philo)
 	{
 		arg->philo[i].num = i + 1;
+		if (i == 0)
+			arg->philo[i].left_f = &arg->fork[arg->num_philo - 1];
+		else
+			arg->philo[i].left_f = &arg->fork[i - 1];
+		arg->philo[i].right_f = &arg->fork[i];
 		arg->philo[i].arg = arg;
 	}
 	return (0);
@@ -63,12 +65,12 @@ static int	init_philo(t_args *arg)
 int	init_all_philo(int ac, char *av[], t_args *arg)
 {
 	if (check_num(ac, av))
-		return (1);
+		return (FALSE);
 	if (data_set(arg, ac, av))
-		return (1);
+		return (FALSE);
 	if (init_mutex(arg))
-		return (1);
+		return (FALSE);
 	if (init_philo(arg))
-		return (1);
+		return (FALSE);
 	return (0);
 }
