@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 12:05:44 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/20 18:33:14 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/22 20:21:47 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,25 @@ int	ft_atoi(const char *str)
 	return (n * sign);
 }
 
-static size_t	ft_strlen(const char *s)
+/*void	ft_usleep(long long time)
 {
-	size_t	i;
+	long long	start;
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
+	start = get_time();
+	while (get_time() < start + time)
+		usleep(10);
+}*/
 
-void	ft_putendl_fd(char *s, int fd)
+/*void	short_sleep(long int time, t_philo *philo)
 {
-	if (s == 0)
-		return ;
-	write(fd, s, ft_strlen(s));
-	write(fd, "\n", 1);
-}
+	long int	start;
+
+	start = get_time();
+	while (death_check(philo, 0) == 0)
+	{
+		if ((get_time() - start) >= time)
+			break ;
+		if (usleep(50) == -1)
+			ft_error(SLEEP_ERROR, philo);
+	}
+}*/

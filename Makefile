@@ -6,7 +6,7 @@
 #    By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/09 15:13:11 by yejlee            #+#    #+#              #
-#    Updated: 2022/12/21 20:54:03 by yejlee           ###   ########.fr        #
+#    Updated: 2022/12/22 18:15:42 by yejlee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ OBJS	= $(SRCS:.c=.o)
 HEADER	= ./philo/
 
 
-CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=thread -g
+CFLAGS	= -Wall -Wextra -Werror -pthread -g3 #-fsanitize=thread -g
 
 .c.o:
 	$(CC) $(CFLAGS) -I $(HEADER) -c $< -o $(<:.c=.o)

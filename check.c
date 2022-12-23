@@ -6,13 +6,13 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 13:51:19 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/21 18:19:57 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/23 12:43:30 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	check_finish(t_args *arg)
+/*static void	check_finish(t_args *arg)
 {
 	int	i;
 
@@ -22,7 +22,7 @@ static void	check_finish(t_args *arg)
 		while (++i < arg->num_philo && !arg->die)
 		{
 			pthread_mutex_lock(&arg->monitor);
-			if (get_time() - arg->philo[i].last_eat > arg->time_to_die) //> 였음
+			if (get_time() - arg->philo[i].last_eat >= arg->time_to_die)
 			{
 				print_message(&arg->philo[i], get_time() \
 						- arg->start_at, DIE);
@@ -39,9 +39,9 @@ static void	check_finish(t_args *arg)
 		if (arg->num_philo == i)
 			arg->done = 1;
 	}
-}
+}*/
 
-static void	free_and_join(t_args *arg)
+/*void	free_and_join(t_args *arg)
 {
 	int	i;
 
@@ -57,7 +57,7 @@ static void	free_and_join(t_args *arg)
 	free(arg->fork);
 	pthread_mutex_destroy(&arg->monitor);
 	pthread_mutex_destroy(&arg->messanger);
-}
+}*/
 
 int	start_program(t_args *arg)
 {
@@ -73,7 +73,7 @@ int	start_program(t_args *arg)
 		if (pthread_create(&arg->philo[i].tid, NULL, start_ph, &arg->philo[i]))
 			return (print_err("ERROR IN CREATE\n"));
 	}
-	check_finish(arg);
-	free_and_join(arg);
+	/*check_finish(arg);
+	free_and_join(arg);*/
 	return (0);
 }

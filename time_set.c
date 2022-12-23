@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 13:30:33 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/21 20:52:52 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/23 11:18:57 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 long long	get_time(void)
 {
-	long long	ms_time;
+	long long		ms_time;
 	struct timeval	time;
 
 	ms_time = 0;
@@ -24,7 +24,7 @@ long long	get_time(void)
 	return (ms_time);
 }
 
-long long timed_now(struct timeval *start, struct timeval *end)
+long long	timed_now(struct timeval *start, struct timeval *end)
 {
 	long	diff;
 

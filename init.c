@@ -6,7 +6,7 @@
 /*   By: yejlee <yejlee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 17:32:01 by yejlee            #+#    #+#             */
-/*   Updated: 2022/12/21 18:16:33 by yejlee           ###   ########.fr       */
+/*   Updated: 2022/12/23 11:41:41 by yejlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static int	data_set(t_args *arg, int ac, char *av[])
 	arg->time_to_eat = ft_atoi(av[3]);
 	arg->time_to_sleep = ft_atoi(av[4]);
 	arg->num_must_eat = -1;
+	arg->start_at = 0;
+	arg->done = 0;
 	if (ac == 6)
 		arg->num_must_eat = ft_atoi(av[5]);
 	return (0);
@@ -52,11 +54,8 @@ static int	init_philo(t_args *arg)
 	while (++i < arg->num_philo)
 	{
 		arg->philo[i].num = i + 1;
-		if (i == 0)
-			arg->philo[i].left_f = &arg->fork[arg->num_philo - 1];
-		else
-			arg->philo[i].left_f = &arg->fork[i - 1];
-		arg->philo[i].right_f = &arg->fork[i];
+		arg->philo[i].left_f = i;
+		arg->philo[i].right_f = ((i + 1) % arg->num_philo);
 		arg->philo[i].arg = arg;
 	}
 	return (0);
